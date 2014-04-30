@@ -3,7 +3,7 @@ data Strategy = AlwaysBetray
               | AlwaysSilent
               | TitForTat
               | Spite
-              deriving (Show, Enum)
+              deriving (Show, Eq, Enum)
 
 allStrategies = [AlwaysBetray ..]
 
@@ -41,11 +41,27 @@ isStrategy opponents mine strategy     = decisions strategy mine == opponents
 guessStrategies :: [Decision] -> [Decision] -> [Strategy]
 guessStrategies opponents mine = filter (isStrategy opponents mine) allStrategies 
 
+counterStrategy :: Strategy -> Strategy
+counterStrategy AlwaysBetray = AlwaysBetray
+counterStrategy AlwaysSilent = AlwaysBetray
+counterStrategy TitForTat    = TitForTat
+counterStrategy Spite        = AlwaysSilent
+counterStrategy _            = TitForTat
+
+counterStrategies :: [Strategy] -> [Strategy]
+counterStrategies opponents = map counterStrategy opponents
+
+bestCounterStrategy :: [Strategy] -> Strategy
+bestCounterStrategy strategies
+  | elem Spite strategies = counterStrategy Spite
+  | otherwise             = counterStrategy (head strategies)
+
 main = do
   -- Always Betray
   print $ guessStrategies [Betray, Betray, Betray, Betray] [Silent, Silent, Silent, Betray]
   -- Tit for Tat / Spite
   print $ guessStrategies [Betray, Betray, Betray, Silent] [Betray, Betray, Betray, Betray]
+  print $ bestCounterStrategy $ guessStrategies [Betray, Betray, Betray, Silent] [Betray, Betray, Betray, Betray]
   -- Tit for Tat
   print $ guessStrategies [Betray, Silent, Betray, Silent] [Silent, Betray, Silent, Betray]
   -- Always Silent
