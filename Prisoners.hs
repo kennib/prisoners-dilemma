@@ -45,7 +45,7 @@ counterStrategy :: Strategy -> Strategy
 counterStrategy AlwaysBetray = AlwaysBetray
 counterStrategy AlwaysSilent = AlwaysBetray
 counterStrategy TitForTat    = TitForTat
-counterStrategy Spite        = AlwaysSilent
+counterStrategy Spite        = Spite
 counterStrategy _            = TitForTat
 
 counterStrategies :: [Strategy] -> [Strategy]
@@ -56,12 +56,16 @@ bestCounterStrategy strategies
   | elem Spite strategies = counterStrategy Spite
   | otherwise             = counterStrategy (head strategies)
 
+bestDecision :: [Decision] -> [Decision] -> Decision
+bestDecision opponents mine = decide strategy opponents
+  where strategy = bestCounterStrategy (guessStrategies opponents mine)
+
 main = do
   -- Always Betray
   print $ guessStrategies [Betray, Betray, Betray, Betray] [Silent, Silent, Silent, Betray]
   -- Tit for Tat / Spite
   print $ guessStrategies [Betray, Betray, Betray, Silent] [Betray, Betray, Betray, Betray]
-  print $ bestCounterStrategy $ guessStrategies [Betray, Betray, Betray, Silent] [Betray, Betray, Betray, Betray]
+  print $ bestDecision [Betray, Betray, Betray, Silent] [Betray, Betray, Betray, Betray]
   -- Tit for Tat
   print $ guessStrategies [Betray, Silent, Betray, Silent] [Silent, Betray, Silent, Betray]
   -- Always Silent
