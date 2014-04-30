@@ -29,8 +29,9 @@ decide TitForTat ds
   | otherwise       = Silent
 
 isStrategy :: [Decision] -> [Decision] -> Strategy -> Bool
-isStrategy opponents _ AlwaysBetray = all isBetray opponents
-isStrategy opponents _ AlwaysSilent = all isSilent opponents
+isStrategy opponents _    AlwaysBetray = all isBetray opponents
+isStrategy opponents _    AlwaysSilent = all isSilent opponents
+isStrategy opponents mine TitForTat    = and (zipWith (==) (tail opponents) mine)
 isStrategy _ _ _ = False
 
 guessStrategies :: [Decision] -> [Decision] -> [Strategy]
@@ -43,5 +44,7 @@ main = do
   print $ decide TitForTat [Silent, Betray, Silent]
 
   print $ guessStrategies [Betray, Betray, Betray, Betray] [Betray, Silent, Silent, Silent]
+  print $ guessStrategies [Betray, Betray, Betray, Betray] [Betray, Betray, Betray, Betray]
   print $ guessStrategies [Silent, Silent, Betray, Betray] [Silent, Betray, Betray, Betray]
   print $ guessStrategies [Silent, Silent, Silent, Silent] [Silent, Betray, Betray, Betray]
+  print $ guessStrategies [Silent, Silent, Betray, Silent] [Silent, Betray, Silent, Silent]
