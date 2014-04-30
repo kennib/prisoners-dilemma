@@ -36,24 +36,17 @@ decisions strategy ds
   | otherwise       = []
 
 isStrategy :: [Decision] -> [Decision] -> Strategy -> Bool
-isStrategy opponents _    AlwaysBetray = all isBetray opponents
-isStrategy opponents _    AlwaysSilent = all isSilent opponents
-isStrategy opponents mine TitForTat    = and (zipWith (==) (tail opponents) mine)
 isStrategy opponents mine strategy     = decisions strategy mine == opponents
 
 guessStrategies :: [Decision] -> [Decision] -> [Strategy]
 guessStrategies opponents mine = filter (isStrategy opponents mine) allStrategies 
 
 main = do
-  print $ decide AlwaysBetray []
-  print $ decide TitForTat []
-  print $ decide TitForTat [Betray, Silent]
-  print $ decide TitForTat [Silent, Betray, Silent]
-
+  -- Always Betray
   print $ guessStrategies [Betray, Betray, Betray, Betray] [Silent, Silent, Silent, Betray]
-  print $ guessStrategies [Betray, Betray, Betray, Betray] [Betray, Betray, Betray, Betray]
-  print $ guessStrategies [Silent, Silent, Betray, Betray] [Silent, Betray, Betray, Betray]
-  print $ guessStrategies [Silent, Silent, Silent, Silent] [Silent, Betray, Betray, Betray]
-  print $ guessStrategies [Silent, Silent, Betray, Silent] [Silent, Betray, Silent, Silent]
-
-  print $ decisions Spite [Betray, Silent, Silent, Silent]
+  -- Tit for Tat / Spite
+  print $ guessStrategies [Betray, Betray, Betray, Silent] [Betray, Betray, Betray, Betray]
+  -- Tit for Tat
+  print $ guessStrategies [Betray, Silent, Betray, Silent] [Silent, Betray, Silent, Betray]
+  -- Always Silent
+  print $ guessStrategies [Silent, Silent, Silent, Silent] [Betray, Betray, Betray, Betray]
