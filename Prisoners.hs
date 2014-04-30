@@ -1,5 +1,3 @@
-import Data.Maybe
-
 data Decision = Betray | Silent deriving (Show, Eq)
 data Strategy = AlwaysBetray
               | AlwaysSilent
