@@ -4,7 +4,9 @@ data Decision = Betray | Silent deriving (Show, Eq)
 data Strategy = AlwaysBetray
               | AlwaysSilent
               | TitForTat
-              deriving (Show)
+              deriving (Show, Enum)
+
+allStrategies = [AlwaysBetray ..]
 
 isBetray :: Decision -> Bool
 isBetray d = d == Betray
@@ -26,11 +28,13 @@ decide TitForTat ds
   | justBetrayed ds = Betray
   | otherwise       = Silent
 
-guessStrategy :: [Decision] -> [Decision] -> Maybe Strategy
-guessStrategy opponents mine
-  | all isBetray opponents = Just AlwaysBetray
-  | all isSilent opponents = Just AlwaysSilent
-  | otherwise = Nothing
+isStrategy :: [Decision] -> [Decision] -> Strategy -> Bool
+isStrategy opponents _ AlwaysBetray = all isBetray opponents
+isStrategy opponents _ AlwaysSilent = all isSilent opponents
+isStrategy _ _ _ = False
+
+guessStrategies :: [Decision] -> [Decision] -> [Strategy]
+guessStrategies opponents mine = filter (isStrategy opponents mine) allStrategies 
 
 main = do
   print $ decide AlwaysBetray []
@@ -38,6 +42,6 @@ main = do
   print $ decide TitForTat [Betray, Silent]
   print $ decide TitForTat [Silent, Betray, Silent]
 
-  print $ guessStrategy [Betray, Betray, Betray, Betray] [Betray, Silent, Silent, Silent]
-  print $ guessStrategy [Silent, Silent, Betray, Betray] [Silent, Betray, Betray, Betray]
-  print $ guessStrategy [Silent, Silent, Silent, Silent] [Silent, Betray, Betray, Betray]
+  print $ guessStrategies [Betray, Betray, Betray, Betray] [Betray, Silent, Silent, Silent]
+  print $ guessStrategies [Silent, Silent, Betray, Betray] [Silent, Betray, Betray, Betray]
+  print $ guessStrategies [Silent, Silent, Silent, Silent] [Silent, Betray, Betray, Betray]
