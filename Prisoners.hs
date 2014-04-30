@@ -7,7 +7,10 @@ data Strategy = AlwaysBetray
               deriving (Show)
 
 isBetray :: Decision -> Bool
-isBetray d = (d == Betray)
+isBetray d = d == Betray
+
+isSilent :: Decision -> Bool
+isSilent d = d == Silent
 
 justBetrayed :: [Decision] -> Bool
 justBetrayed ds
@@ -26,6 +29,7 @@ decide TitForTat ds
 guessStrategy :: [Decision] -> [Decision] -> Maybe Strategy
 guessStrategy opponents mine
   | all isBetray opponents = Just AlwaysBetray
+  | all isSilent opponents = Just AlwaysSilent
   | otherwise = Nothing
 
 main = do
@@ -36,3 +40,4 @@ main = do
 
   print $ guessStrategy [Betray, Betray, Betray, Betray] [Betray, Silent, Silent, Silent]
   print $ guessStrategy [Silent, Silent, Betray, Betray] [Silent, Betray, Betray, Betray]
+  print $ guessStrategy [Silent, Silent, Silent, Silent] [Silent, Betray, Betray, Betray]
