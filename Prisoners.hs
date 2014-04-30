@@ -32,7 +32,7 @@ decide Spite ds
 
 decisions :: Strategy -> [Decision] -> [Decision]
 decisions strategy ds
-  | length (ds) > 0 = [decide strategy ds] ++ decisions strategy (tail ds)
+  | length (ds) > 0 = [decide strategy (tail ds)] ++ decisions strategy (tail ds)
   | otherwise       = []
 
 isStrategy :: [Decision] -> [Decision] -> Strategy -> Bool
